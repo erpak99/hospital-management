@@ -1,12 +1,18 @@
 package sample.hospital.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class DoctorCreateRequest {
 
 	private Long id;
+	@NotBlank(message = "Name can not be empty")
 	private String name;
+	@NotBlank(message = "Surname can not be empty")
 	private String surname;
+	@Pattern(regexp = "^[0-9]{11}$",message = "Identity number must be 11 digits and all characters must be numbers")
 	private String identityNumber;
+	@NotBlank(message = "Password can not be empty")
 	private String password;
 	private Long departmentId;
 	

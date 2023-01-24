@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import sample.hospital.dto.AppointmentCreateRequest;
 import sample.hospital.dto.AppointmentResponse;
+import sample.hospital.dto.AppointmentUpdateRequest;
 import sample.hospital.model.Appointment;
 import sample.hospital.service.AppointmentService;
 
@@ -26,7 +29,7 @@ public class AppointmentController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentCreateRequest appointmentCreateRequest) {
+	public ResponseEntity<Appointment> createAppointment(@RequestBody @Valid AppointmentCreateRequest appointmentCreateRequest) {
 		return ResponseEntity.ok(appointmentService.createAppointment(appointmentCreateRequest));
 	}
 	
@@ -38,6 +41,13 @@ public class AppointmentController {
 	@GetMapping("/{id}")
 	public AppointmentResponse findById(@PathVariable Long id) {
 		return appointmentService.findById(id);
+	}
+	
+	@PutMapping("/{id}")
+	public AppointmentResponse updateAppointment(@PathVariable Long id,
+												 @RequestBody @ Valid
+												 AppointmentUpdateRequest appointmentUpdateRequest) {
+		return appointmentService.updateAppointment(id,appointmentUpdateRequest);
 	}
 	
 }

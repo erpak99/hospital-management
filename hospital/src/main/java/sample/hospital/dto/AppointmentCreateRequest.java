@@ -2,16 +2,22 @@ package sample.hospital.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
+
 public class AppointmentCreateRequest {
 
 	private Long id;
 	
+	@NotNull(message = "Patient id can not be empty")
 	private Long patientId;
 	
+	@NotNull(message = "Doctor id can not be empty")
 	private Long doctorId;
 	
+	@NotNull(message = "Department id can not be empty")
 	private Long departmentId;
-	
+
+	@NotNull(message = "Date can not be empty")
 	private LocalDateTime date;
 
 	public AppointmentCreateRequest(Long id, Long patientId, Long doctorId, Long departmentId,LocalDateTime date) {

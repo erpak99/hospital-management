@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import sample.hospital.dto.AppointmentPatientResponse;
 import sample.hospital.dto.PatientCreateRequest;
 import sample.hospital.dto.PatientResponse;
@@ -29,7 +30,7 @@ public class PatientController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<Patient> createPatient(@RequestBody PatientCreateRequest patientCreateRequest) {
+	public ResponseEntity<Patient> createPatient(@RequestBody @Valid PatientCreateRequest patientCreateRequest) {
 		return ResponseEntity.ok(patientService.createPatient(patientCreateRequest));
 	}
 	
