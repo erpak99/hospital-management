@@ -9,4 +9,6 @@ import sample.hospital.model.Doctor;
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
 	List<Doctor> findByDepartment_Id(Long id);
+
+	List<Doctor> findByDepartment_Name(String name);
 }

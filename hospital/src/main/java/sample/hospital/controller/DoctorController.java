@@ -44,6 +44,11 @@ public class DoctorController {
 		return doctorService.findById(id);
 	}
 	
+	@GetMapping("/findbydepartmentname")
+	public List<DoctorResponse> findByDepartmentName(@RequestParam String name) {
+		return doctorService.findByDepartmentName(name);
+	}
+	
 	@DeleteMapping("/{id}")
 	public void deletebyId(@PathVariable Long id) {
 		doctorService.deleteById(id);

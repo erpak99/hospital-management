@@ -65,6 +65,11 @@ public class DoctorService {
 		return new DoctorResponse(doctor);
 	}
 
+	public List<DoctorResponse> findByDepartmentName(String name) {
+		List<Doctor> doctors = doctorRepository.findByDepartment_Name(name);
+		return doctors.stream().map(doctor -> new DoctorResponse(doctor)).collect(Collectors.toList());
+	}
+	
 	public void deleteById(Long id) {
 		doctorRepository.deleteById(id);
 	}

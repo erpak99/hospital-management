@@ -1,5 +1,6 @@
 package sample.hospital.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,6 +85,27 @@ public class AppointmentService {
 			return new AppointmentResponse(updatedAppointment);
 		}
 		else throw new NotFoundException("Check doctor's department id carefully...");
+	}
+	
+	public List<AppointmentResponse> findByDate(LocalDateTime date) {
+		  List<Appointment> appointments = appointmentRepository.findByDate(date);
+		  return appointments.stream().
+				  			 map(appointment -> new AppointmentResponse(appointment)).
+				  			 collect(Collectors.toList());
+	}
+	
+	public List<AppointmentResponse> findByDateBetween(LocalDateTime start, LocalDateTime end) {
+		List<Appointment> appointments = appointmentRepository.findByDateBetween(start, end);
+		return appointments.stream().
+							map(appointment -> new AppointmentResponse(appointment)).
+							collect(Collectors.toList());
+	}
+	
+	public List<AppointmentResponse> findByPatientIdAndDepartmentName(Long id, String name) {
+		List<Appointment> appointments = appointmentRepository.findByPatient_IdAndDepartment_Name(id,name);
+		return appointments.stream().
+							map(appointment -> new AppointmentResponse(appointment)).
+							collect(Collectors.toList());
 	}
 	
 }

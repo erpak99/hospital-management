@@ -1,5 +1,6 @@
 package sample.hospital.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -50,4 +52,20 @@ public class AppointmentController {
 		return appointmentService.updateAppointment(id,appointmentUpdateRequest);
 	}
 	
+	@GetMapping("/findbydate")
+	public List<AppointmentResponse> findByDate(@RequestParam LocalDateTime date) {
+		return appointmentService.findByDate(date);
+	}
+	
+	@GetMapping("/findbydatebetween")
+	public List<AppointmentResponse> findByDateBetween(@RequestParam LocalDateTime start,
+													   @RequestParam LocalDateTime end) {
+		return appointmentService.findByDateBetween(start,end);
+	}
+	
+	@GetMapping("/findbypatientidanddepartmentname")
+	public List<AppointmentResponse> findByPatientIdAndDepartmentName(@RequestParam Long id,
+																	  @RequestParam String name) {
+		return appointmentService.findByPatientIdAndDepartmentName(id, name);
+	}
 }

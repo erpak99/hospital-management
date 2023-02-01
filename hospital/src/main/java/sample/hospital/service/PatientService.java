@@ -1,5 +1,6 @@
 package sample.hospital.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,5 +67,32 @@ public class PatientService {
 		return patientRepository.findById(id).orElseThrow(
 				() -> new NotFoundException("Patient with id "+id+" not found"));
 	}
+	
+	public List<PatientResponse> getPatientNameStartsWith(String prefix) throws IllegalArgumentException {
+		List<Patient> allPatients = patientRepository.findAll();
+		String lowerCasePrefix = prefix.toLowerCase();
+		List<PatientResponse> filteredPatients = allPatients.stream().map(patient -> new PatientResponse(patient)).
+				filter(p -> p.getName().toLowerCase().startsWith(lowerCasePrefix))
+				.collect(Collectors.toList());	
+		if(filteredPatients.isEmpty()) {
+			throw new IllegalArgumentException("No patient found with the name starts with: " + prefix);
+		}
+		return filteredPatients;
+	}
+
+	public String getCountOfAllPatients() {
+		List<Patient> allPatients = patientRepository.findAll();
+		Long count = allPatients.stream().map(patient -> new PatientResponse(patient)).count(); 
+		return "Numbers of all patients: " + count;
+	}
+
+	public List<PatientResponse> getPatientsSortedBySurname() {
+		List<Patient> allPatients = patientRepository.findAll();
+		return allPatients.stream().map(patient -> new PatientResponse(patient)).
+						  sorted(Comparator.comparing(PatientResponse::getSurname))
+						  .peek(p-> p.setSurname(p.getSurname())).collect(Collectors.toList());
+	
+}
+	
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -42,6 +43,21 @@ public class PatientController {
 	@GetMapping("/{id}")
 	public AppointmentPatientResponse findById(@PathVariable Long id) {
 		return patientService.findById(id);
+	}
+	
+	@GetMapping("/getpatientnamestartswith")
+	public List<PatientResponse> getPatientNameStartsWith(@RequestParam String prefix) {
+		return patientService.getPatientNameStartsWith(prefix);
+	}  
+	
+	@GetMapping("/getpatientsbysurname")
+	public List<PatientResponse> getPatientsSortedBySurname() {
+		return patientService.getPatientsSortedBySurname();											
+	} 
+	
+	@GetMapping("/numberofallpatients")
+	public String getCountOfAllPatients() {
+		return patientService.getCountOfAllPatients();
 	}
 	
 	@DeleteMapping("/{id}")
