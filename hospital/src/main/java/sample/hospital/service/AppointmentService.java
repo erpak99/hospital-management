@@ -84,7 +84,7 @@ public class AppointmentService {
 			appointmentRepository.save(updatedAppointment);
 			return new AppointmentResponse(updatedAppointment);
 		}
-		else throw new NotFoundException("Check doctor's department id carefully...");
+		else throw new NotFoundException("Check id's of doctor and department carefully...");
 	}
 	
 	public List<AppointmentResponse> findByDate(LocalDateTime date) {

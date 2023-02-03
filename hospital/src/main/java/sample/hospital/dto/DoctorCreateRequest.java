@@ -1,31 +1,41 @@
 package sample.hospital.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public class DoctorCreateRequest {
 
 	private Long id;
+	
 	@NotBlank(message = "Name can not be empty")
 	private String name;
+	
 	@NotBlank(message = "Surname can not be empty")
 	private String surname;
+	
+	@Email(message = "Wrong e-mail address format")
+	private String email;
+	
 	@Pattern(regexp = "^[0-9]{11}$",message = "Identity number must be 11 digits and all characters must be numbers")
 	private String identityNumber;
+	
 	@NotBlank(message = "Password can not be empty")
 	private String password;
+	
 	private Long departmentId;
 	
 	public DoctorCreateRequest() {
 		super();
 	}
 
-	public DoctorCreateRequest(Long id, String name, String surname, String identityNumber, String password,
-			Long departmentId) {
+	public DoctorCreateRequest(Long id, String name, String surname, String email,
+							   String identityNumber, String password, Long departmentId) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
+		this.email = email;
 		this.identityNumber = identityNumber;
 		this.password = password;
 		this.departmentId = departmentId;
@@ -53,6 +63,14 @@ public class DoctorCreateRequest {
 
 	public void setSurname(String surname) {
 		this.surname = surname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getIdentityNumber() {

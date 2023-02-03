@@ -32,6 +32,9 @@ public class Doctor {
 	@Column(name = "surname")
 	private String surname;
 	
+	@Column(name= "email")
+	private String email;
+	
 	@Column(name = "identity_number")
 	private String identityNumber;
 	
@@ -53,12 +56,14 @@ public class Doctor {
 
 	}
 
-	public Doctor(Long id, String name, String surname, String identityNumber, String password,
-			List<Patient> patients, Department department) {
+	public Doctor(Long id, String name, String surname, String email,
+				  String identityNumber, String password,
+           		  List<Patient> patients, Department department) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
+		this.email = email;
 		this.identityNumber = identityNumber;
 		this.password = password;
 		this.patients = patients;
@@ -87,6 +92,14 @@ public class Doctor {
 
 	public void setSurname(String surname) {
 		this.surname = surname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getIdentityNumber() {

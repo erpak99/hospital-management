@@ -1,5 +1,6 @@
 package sample.hospital.service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,27 +24,45 @@ public class PatientService {
 	private final PatientRepository patientRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AppointmentService appointmentService;
+	private final EmailSenderService emailSenderService;
 	
 	@Lazy
-	public PatientService(PatientRepository patientRepository, AppointmentService appointmentService) {
+	public PatientService(PatientRepository patientRepository,
+						  AppointmentService appointmentService,
+						  EmailSenderService emailSenderService) {
 		this.patientRepository = patientRepository;
 		this.passwordEncoder  = new BCryptPasswordEncoder();
 		this.appointmentService = appointmentService;
+		this.emailSenderService = emailSenderService;
 	}
 
-	public Patient createPatient(PatientCreateRequest patientCreateRequest) {
+	public Patient createPatient(PatientCreateRequest patientCreateRequest) throws IllegalArgumentException {
+		
+		 Patient existingPatient = patientRepository.findByEmail(patientCreateRequest.getEmail());
+		  if (existingPatient != null) {
+		    throw new IllegalArgumentException("The email address already exists in the system. "
+		    		                           + "Please try to sign up with another mail adress");
+		  }
+		
 		Patient newPatient = new Patient();
 		
 		newPatient.setId(patientCreateRequest.getId());
 		newPatient.setName(patientCreateRequest.getName());
 		newPatient.setSurname(patientCreateRequest.getSurname());
+		newPatient.setEmail(patientCreateRequest.getEmail());
 		String identityNumber = patientCreateRequest.getIdentityNumber();
 		String maskedIdentityNumber = identityNumber.subSequence(0, 3) + "********";
 		newPatient.setIdentityNumber(maskedIdentityNumber);
 		String encodedPassword = passwordEncoder.encode(patientCreateRequest.getPassword());
 		newPatient.setPassword(encodedPassword);
 	
+		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
+									 patientCreateRequest.getName() + " " + patientCreateRequest.getSurname() +
+									 " sign up successfully to hospital management in " + LocalDateTime.now(),
+									 "Confirmation Mail");
+
 		return patientRepository.save(newPatient);
+		
 	}
 
 	public List<PatientResponse> getAllPatients() {
