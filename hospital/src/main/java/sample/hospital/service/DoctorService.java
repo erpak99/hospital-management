@@ -35,10 +35,18 @@ public class DoctorService {
 			throw new NotFoundException(
 					"Department with id " +doctorCreateRequest.getDepartmentId()+" not found");
 			}
+		
+		 Doctor existingDoctor = doctorRepository.findByEmail(doctorCreateRequest.getEmail());
+		  if (existingDoctor != null) {
+		    throw new IllegalArgumentException("The email address already exists in the system. "
+		    		                           + "Please try to sign up with another mail adress");
+		  }
+		
 		Doctor newDoctor = new Doctor();
 		newDoctor.setId(doctorCreateRequest.getId());
 		newDoctor.setName(doctorCreateRequest.getName());
 		newDoctor.setSurname(doctorCreateRequest.getSurname());
+		newDoctor.setEmail(doctorCreateRequest.getEmail());
 		String identityNumber = doctorCreateRequest.getIdentityNumber();
 		String maskedIdentityNumber = identityNumber.substring(0, 3) + "********";
 		newDoctor.setIdentityNumber(maskedIdentityNumber);

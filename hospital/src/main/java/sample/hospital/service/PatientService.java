@@ -58,7 +58,7 @@ public class PatientService {
 	
 		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
 									 patientCreateRequest.getName() + " " + patientCreateRequest.getSurname() +
-									 " sign up successfully to hospital management in " + LocalDateTime.now(),
+									 " sign up successfully to hospital management at " + LocalDateTime.now(),
 									 "Confirmation Mail");
 
 		return patientRepository.save(newPatient);
