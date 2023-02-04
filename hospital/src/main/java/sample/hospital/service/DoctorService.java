@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import sample.hospital.dto.DoctorCreateRequest;
 import sample.hospital.dto.DoctorResponse;
+import sample.hospital.exception.EmailAlreadyUsedException;
 import sample.hospital.exception.NotFoundException;
 import sample.hospital.model.Department;
 import sample.hospital.model.Doctor;
@@ -29,19 +30,18 @@ public class DoctorService {
 		this.passwordEncoder = new BCryptPasswordEncoder();
 	}
 
-	public Doctor createDoctor(DoctorCreateRequest doctorCreateRequest) throws NotFoundException {
+	public Doctor createDoctor(DoctorCreateRequest doctorCreateRequest)
+			throws NotFoundException, EmailAlreadyUsedException {
 		Department department = departmentService.findById(doctorCreateRequest.getDepartmentId());
-		if(department == null) {
-			throw new NotFoundException(
-					"Department with id " +doctorCreateRequest.getDepartmentId()+" not found");
-			}
-		
-		 Doctor existingDoctor = doctorRepository.findByEmail(doctorCreateRequest.getEmail());
-		  if (existingDoctor != null) {
-		    throw new IllegalArgumentException("The email address already exists in the system. "
-		    		                           + "Please try to sign up with another mail adress");
-		  }
-		
+		if (department == null) {
+			throw new NotFoundException("Department with id " + doctorCreateRequest.getDepartmentId() + " not found");
+		}
+
+		Doctor existingDoctor = doctorRepository.findByEmail(doctorCreateRequest.getEmail());
+		if (existingDoctor != null) {
+			throw new EmailAlreadyUsedException();
+		}
+
 		Doctor newDoctor = new Doctor();
 		newDoctor.setId(doctorCreateRequest.getId());
 		newDoctor.setName(doctorCreateRequest.getName());
@@ -53,7 +53,7 @@ public class DoctorService {
 		String encodedPassword = passwordEncoder.encode(doctorCreateRequest.getPassword());
 		newDoctor.setPassword(encodedPassword);
 		newDoctor.setDepartment(department);
-		
+
 		return doctorRepository.save(newDoctor);
 	}
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import sample.hospital.dto.AppointmentPatientResponse;
 import sample.hospital.dto.PatientCreateRequest;
 import sample.hospital.dto.PatientResponse;
+import sample.hospital.exception.EmailAlreadyUsedException;
 import sample.hospital.exception.NotFoundException;
 import sample.hospital.model.Appointment;
 import sample.hospital.model.Patient;
@@ -36,16 +37,15 @@ public class PatientService {
 		this.emailSenderService = emailSenderService;
 	}
 
-	public Patient createPatient(PatientCreateRequest patientCreateRequest) throws IllegalArgumentException {
-		
-		 Patient existingPatient = patientRepository.findByEmail(patientCreateRequest.getEmail());
-		  if (existingPatient != null) {
-		    throw new IllegalArgumentException("The email address already exists in the system. "
-		    		                           + "Please try to sign up with another mail adress");
-		  }
-		
+	public Patient createPatient(PatientCreateRequest patientCreateRequest) throws EmailAlreadyUsedException {
+
+		Patient existingPatient = patientRepository.findByEmail(patientCreateRequest.getEmail());
+		if (existingPatient != null) {
+			throw new EmailAlreadyUsedException();
+		}
+
 		Patient newPatient = new Patient();
-		
+
 		newPatient.setId(patientCreateRequest.getId());
 		newPatient.setName(patientCreateRequest.getName());
 		newPatient.setSurname(patientCreateRequest.getSurname());
@@ -55,14 +55,14 @@ public class PatientService {
 		newPatient.setIdentityNumber(maskedIdentityNumber);
 		String encodedPassword = passwordEncoder.encode(patientCreateRequest.getPassword());
 		newPatient.setPassword(encodedPassword);
-	
+
 		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
-									 patientCreateRequest.getName() + " " + patientCreateRequest.getSurname() +
-									 " sign up successfully to hospital management at " + LocalDateTime.now(),
-									 "Confirmation Mail");
+				patientCreateRequest.getName() + " " + patientCreateRequest.getSurname()
+						+ " sign up successfully to hospital management at " + LocalDateTime.now(),
+				"Confirmation Mail");
 
 		return patientRepository.save(newPatient);
-		
+
 	}
 
 	public List<PatientResponse> getAllPatients() {
@@ -87,14 +87,14 @@ public class PatientService {
 				() -> new NotFoundException("Patient with id "+id+" not found"));
 	}
 	
-	public List<PatientResponse> getPatientNameStartsWith(String prefix) throws IllegalArgumentException {
+	public List<PatientResponse> getPatientNameStartsWith(String prefix) throws NotFoundException {
 		List<Patient> allPatients = patientRepository.findAll();
 		String lowerCasePrefix = prefix.toLowerCase();
 		List<PatientResponse> filteredPatients = allPatients.stream().map(patient -> new PatientResponse(patient)).
 				filter(p -> p.getName().toLowerCase().startsWith(lowerCasePrefix))
 				.collect(Collectors.toList());	
 		if(filteredPatients.isEmpty()) {
-			throw new IllegalArgumentException("No patient found with the name starts with: " + prefix);
+			throw new NotFoundException("No patient found with the name starts with: " + prefix);
 		}
 		return filteredPatients;
 	}
