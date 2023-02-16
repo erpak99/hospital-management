@@ -27,6 +27,8 @@ public class PatientService {
 	private final AppointmentService appointmentService;
 	private final EmailSenderService emailSenderService;
 	
+	private static final String SUBJECT = "Confirmation Mail";
+	
 	@Lazy
 	public PatientService(PatientRepository patientRepository,
 						  AppointmentService appointmentService,
@@ -59,7 +61,7 @@ public class PatientService {
 		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
 				patientCreateRequest.getName() + " " + patientCreateRequest.getSurname()
 						+ " sign up successfully to hospital management at " + LocalDateTime.now(),
-				"Confirmation Mail");
+						SUBJECT);
 
 		return patientRepository.save(newPatient);
 

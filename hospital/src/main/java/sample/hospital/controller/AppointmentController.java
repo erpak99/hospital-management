@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import sample.hospital.dto.AppointmentCreateRequest;
 import sample.hospital.dto.AppointmentResponse;
 import sample.hospital.dto.AppointmentUpdateRequest;
+import sample.hospital.exception.NotFoundException;
 import sample.hospital.model.Appointment;
 import sample.hospital.service.AppointmentService;
 
@@ -31,7 +33,7 @@ public class AppointmentController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<Appointment> createAppointment(@RequestBody @Valid AppointmentCreateRequest appointmentCreateRequest) {
+	public ResponseEntity<Appointment> createAppointment(@RequestBody @Valid AppointmentCreateRequest appointmentCreateRequest) throws NotFoundException, MessagingException {
 		return ResponseEntity.ok(appointmentService.createAppointment(appointmentCreateRequest));
 	}
 	
