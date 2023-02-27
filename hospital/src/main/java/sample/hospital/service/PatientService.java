@@ -58,13 +58,17 @@ public class PatientService {
 		String encodedPassword = passwordEncoder.encode(patientCreateRequest.getPassword());
 		newPatient.setPassword(encodedPassword);
 
-		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
-				patientCreateRequest.getName() + " " + patientCreateRequest.getSurname()
-						+ " sign up successfully to hospital management at " + LocalDateTime.now(),
-						SUBJECT);
+		sendEmail(patientCreateRequest);
 
 		return patientRepository.save(newPatient);
 
+	}
+	
+	public void sendEmail(PatientCreateRequest patientCreateRequest) {
+		emailSenderService.sendEmail(patientCreateRequest.getEmail(),
+				patientCreateRequest.getName() + " " + patientCreateRequest.getSurname()
+						+ " sign up successfully to hospital management system at " + LocalDateTime.now(),
+						SUBJECT);
 	}
 
 	public List<PatientResponse> getAllPatients() {

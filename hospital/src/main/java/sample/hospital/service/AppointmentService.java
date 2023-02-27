@@ -56,21 +56,28 @@ public class AppointmentService {
 			newAppointment.setDepartment(department);
 			newAppointment.setDate(appointmentCreateRequest.getDate());
 			
-			String body = "Dear " + patient.getName() + " " + patient.getSurname()
-					+ ",\nYour appointment is approved...\nDepartment: " + department.getName() + "\nDoctor: "
-					+ doctor.getName() + " " + doctor.getSurname() + "\nDate: " + appointmentCreateRequest.getDate();
-
-			String attachment = "C:\\Users\\Erpak\\Pictures\\logo.png";
-			File attachmentFile = new File(attachment);
-			
-			if (attachmentFile.exists())
-				emailSenderService.sendEmailWithAttachment(patient.getEmail(), body, SUBJECT, attachment);
-			else
-				emailSenderService.sendEmail(patient.getEmail(), body, SUBJECT);
+			sendEmail(appointmentCreateRequest);
 
 			return appointmentRepository.save(newAppointment);
 		}
 		else throw new NotFoundException("Please check patient, doctor and departmend info...");
+	}
+
+	public void sendEmail(AppointmentCreateRequest appointmentCreateRequest) throws MessagingException {
+		Patient patient = patientService.findByIdForAppointment(appointmentCreateRequest.getPatientId());
+		Doctor doctor = doctorService.findByIdForAppointment(appointmentCreateRequest.getDoctorId());
+		Department department = departmentService.findById(appointmentCreateRequest.getDepartmentId());
+		String body = "Dear " + patient.getName() + " " + patient.getSurname()
+				+ ",\nYour appointment is approved...\nDepartment: " + department.getName() + "\nDoctor: "
+				+ doctor.getName() + " " + doctor.getSurname() + "\nDate: " + appointmentCreateRequest.getDate();
+
+		String attachment = "C:\\Users\\Erpak\\Pictures\\logo.png";
+		File attachmentFile = new File(attachment);
+
+		if (attachmentFile.exists())
+			emailSenderService.sendEmailWithAttachment(patient.getEmail(), body, SUBJECT, attachment);
+		else
+			emailSenderService.sendEmail(patient.getEmail(), body, SUBJECT);
 	}
 
 	public List<AppointmentResponse> getAllAppointments() {
